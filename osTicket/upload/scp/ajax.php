@@ -61,6 +61,7 @@ $dispatcher = patterns('',
         url_delete('^answer/(?P<entry>\d+)/(?P<field>\d+)$', 'deleteAnswer'),
         url_post('^upload/(\d+)?$', 'upload'),
         url_post('^upload/(\w+)?$', 'attach'),
+        url_post('^upload/(?P<object>ticket|task)/(\w+)$', 'attach'),
         url_get('^(?P<id>\d+)/fields/view$', 'getAllFields')
     )),
     url('^/filter/', patterns('ajax.filter.php:FilterAjaxAPI',
@@ -86,6 +87,12 @@ $dispatcher = patterns('',
         url_post('^(?P<list>\w+)/delete$', 'deleteItems'),
         url_post('^(?P<list>\w+)/disable$', 'disableItems'),
         url_post('^(?P<list>\w+)/enable$', 'undisableItems')
+    )),
+    url('^/plugins/', patterns('ajax.plugins.php:PluginsAjaxAPI',
+        url_get('^(?P<id>\d+)/instances$', 'getInstances'),
+        url('^(?P<id>\d+)/instances/(?P<iid>\d+)/update$', 'updateInstance'),
+        url('^(?P<id>\d+)/instances/add$', 'addInstance'),
+        url_post('^(?P<id>\d+)/instances/(\w+)$', 'actions')
     )),
     url('^/report/overview/', patterns('ajax.reports.php:OverviewReportAjaxAPI',
         # Send
@@ -183,6 +190,8 @@ $dispatcher = patterns('',
         url('^(?P<tid>\d+)/transfer$', 'transfer'),
         url('^(?P<tid>\d+)/field/(?P<fid>\d+)/edit$', 'editField'),
         url('^(?P<tid>\d+)/field/(?P<field>\w+)/edit$', 'editField'),
+        url('^(?P<tid>\d+)/field/(?P<fid>\d+)/view$', 'viewField'),
+        url('^(?P<tid>\d+)/field/(?P<field>\w+)/view$', 'viewField'),
         url('^(?P<tid>\d+)/assign(?:/(?P<to>\w+))?$', 'assign'),
         url('^(?P<tid>\d+)/release$', 'release'),
         url('^(?P<tid>\d+)/mark/(?P<action>\w+)$', 'markAs'),
@@ -292,7 +301,9 @@ $dispatcher = patterns('',
         url_get('^/(?P<id>\d+)/perms', 'getAgentPerms'),
         url('^/reset-permissions', 'resetPermissions'),
         url('^/change-department', 'changeDepartment'),
-        url('^/(?P<id>\d+)/avatar/change', 'setAvatar')
+        url('^/(?P<id>\d+)/avatar/change', 'setAvatar'),
+        url('^/(?P<id>\d+)/2fa/configure(?:/(?P<mfid>.+))?$', 'configure2FA'),
+        url('^/(?P<id>\d+)/reset-2fa', 'reset2fA')
     )),
     url('^/queue/', patterns('ajax.search.php:SearchAjaxAPI',
         url('^(?P<id>\d+/)?preview$', 'previewQueue'),
@@ -302,13 +313,17 @@ $dispatcher = patterns('',
         url_get('^condition/addProperty$', 'addConditionProperty'),
         url_get('^counts$', 'collectQueueCounts'),
         url('^(?P<id>\d+)/delete$', 'deleteQueue')
+    )),
+    url('^/email', patterns('ajax.email.php:EmailAjaxAPI',
+        url_post('^/(?P<id>\d+)/stash$', 'stashFormData'),
+        url('^/(?P<id>\d+)/auth/config/(?P<type>\w+)/(?P<auth>.+)$', 'configureAuth'),
     ))
 );
 
 Signal::send('ajax.scp', $dispatcher);
 
 # Call the respective function
-$rv = $dispatcher->resolve($ost->get_path_info());
+$rv = $dispatcher->resolve(Osticket::get_path_info());
 
 // Indicate JSON response content-type
 if (is_string($rv) && $rv[0] == '{')
