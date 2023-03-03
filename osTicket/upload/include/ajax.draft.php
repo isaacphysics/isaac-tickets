@@ -6,7 +6,7 @@ require_once(INCLUDE_DIR.'class.draft.php');
 
 class DraftAjaxAPI extends AjaxController {
 
-    function _createDraft($vars) {
+    static function _createDraft($vars) {
         if (false === ($vars['body'] = self::_findDraftBody($_POST)))
             return JsonDataEncoder::encode(array(
                 'error' => __("Draft body not found in request"),
@@ -16,24 +16,26 @@ class DraftAjaxAPI extends AjaxController {
         if (!($draft = Draft::create($vars)) || !$draft->save())
             Http::response(500, 'Unable to create draft');
 
+        header('Content-Type: application/json; charset=UTF-8');
         echo JsonDataEncoder::encode(array(
             'draft_id' => $draft->getId(),
         ));
     }
 
-    function _getDraft($draft) {
+    static function _getDraft($draft) {
         if (!$draft || !$draft instanceof Draft)
             Http::response(205, "Draft not found. Create one first");
 
         $body = Format::viewableImages($draft->getBody());
 
+        header('Content-Type: application/json; charset=UTF-8');
         echo JsonDataEncoder::encode(array(
             'body' => $body,
             'draft_id' => $draft->getId(),
         ));
     }
 
-    function _updateDraft($draft) {
+    static function _updateDraft($draft) {
         if (false === ($body = self::_findDraftBody($_POST)))
             return JsonDataEncoder::encode(array(
                 'error' => array(
@@ -48,7 +50,7 @@ class DraftAjaxAPI extends AjaxController {
         echo "{}";
     }
 
-    function _uploadInlineImage($draft) {
+    static function _uploadInlineImage($draft) {
         global $cfg;
 
         if (!isset($_POST['data']) && !isset($_FILES['file']))
@@ -126,8 +128,9 @@ class DraftAjaxAPI extends AjaxController {
         if (!($f = AttachmentFile::lookup($id)))
             return Http::response(500, 'Unable to attach image');
 
+        header('Content-Type: application/json; charset=UTF-8');
         echo JsonDataEncoder::encode(array(
-            $f->getName() => array(
+            Format::sanitize($f->getName()) => array(
             'content_id' => 'cid:'.$f->getKey(),
             'id' => $f->getKey(),
             // Return draft_id to connect the auto draft creation
@@ -369,10 +372,11 @@ class DraftAjaxAPI extends AjaxController {
                 'title' => $f->getName(),
             );
         }
+        header('Content-Type: application/json; charset=UTF-8');
         echo JsonDataEncoder::encode($files);
     }
 
-    function _findDraftBody($vars) {
+    static function _findDraftBody($vars) {
         if (isset($vars['name'])) {
             $parts = array();
             // Support nested `name`, like trans[lang]
@@ -384,8 +388,15 @@ class DraftAjaxAPI extends AjaxController {
                 return $focus;
             }
         }
+
+        // Get ThreadEntry field name.
+        $tform = TicketForm::objects()->one()->getForm();
+        $tfield = $tform->getField('message')->getFormName();
+        // Get Task Description field name.
+        $aform = TaskForm::objects()->one()->getForm();
+        $afield = $aform->getField('description')->getFormName();
         $field_list = array('response', 'note', 'answer', 'body',
-             'message', 'issue', 'description');
+             $tfield, 'issue', $afield);
         foreach ($field_list as $field) {
             if (isset($vars[$field])) {
                 return $vars[$field];

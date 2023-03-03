@@ -33,7 +33,7 @@ if(OSTINSTALLED!=TRUE){
 define('SECRET_SALT','qChH0OfyDqoJf2uabia0qfVmF3Akqki1');
 
 #Default admin email. Used only on db connection issues and related alerts.
-define('ADMIN_EMAIL','ian@isaacphysics.org');
+define('ADMIN_EMAIL','james@isaacphysics.org');
 
 # Database Options
 # ---------------------------------------------------

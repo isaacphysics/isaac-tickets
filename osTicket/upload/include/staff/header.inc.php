@@ -32,24 +32,24 @@ if (osTicket::is_ie())
         .tip_shadow { display:block !important; }
     </style>
     <![endif]-->
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.4.0.min.js?cba6035"></script>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/thread.css?cba6035" media="all"/>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/scp.css?cba6035" media="all"/>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css?cba6035" media="screen"/>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/typeahead.css?cba6035" media="screen"/>
-    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.10.3.custom.min.css?cba6035"
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.5.1.min.js?8fbc7ee"></script>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/thread.css?8fbc7ee" media="all"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/scp.css?8fbc7ee" media="all"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css?8fbc7ee" media="screen"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/typeahead.css?8fbc7ee" media="screen"/>
+    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.13.1.custom.min.css?8fbc7ee"
          rel="stylesheet" media="screen" />
-    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/jquery-ui-timepicker-addon.css?cba6035" media="all"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?cba6035"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/jquery-ui-timepicker-addon.css?8fbc7ee" media="all"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?8fbc7ee"/>
     <!--[if IE 7]>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome-ie7.min.css?cba6035"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome-ie7.min.css?8fbc7ee"/>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/dropdown.css?cba6035"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/loadingbar.css?cba6035"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css?cba6035"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/select2.min.css?cba6035"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css?cba6035"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/translatable.css?cba6035"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/dropdown.css?8fbc7ee"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/loadingbar.css?8fbc7ee"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css?8fbc7ee"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/select2.min.css?8fbc7ee"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css?8fbc7ee"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/translatable.css?8fbc7ee"/>
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-16x16.png" sizes="16x16" />
@@ -106,7 +106,7 @@ if (osTicket::is_ie())
     <?php include STAFFINC_DIR . "templates/sub-navigation.tmpl.php"; ?>
 
         <div id="content">
-        <?php if($errors['err']) { ?>
+        <?php if(isset($errors['err'])) { ?>
             <div id="msg_error"><?php echo $errors['err']; ?></div>
         <?php }elseif($msg) { ?>
             <div id="msg_notice"><?php echo $msg; ?></div>

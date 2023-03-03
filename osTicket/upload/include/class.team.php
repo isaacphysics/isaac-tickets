@@ -88,6 +88,17 @@ implements TemplateVariable {
         return $this->_members;
     }
 
+    function getMembersForAlerts() {
+        $alertmembers = array();
+        $members = $this->members->filter(array(
+            'flags__hasbit' => TeamMember::FLAG_ALERTS,
+        ));
+        foreach ($members as $m)
+            $alertmembers[] = $m->staff;
+
+        return $alertmembers;
+    }
+
     function hasMember($staff) {
         return $this->members
             ->filter(array('staff_id'=>$staff->getId()))
@@ -201,13 +212,14 @@ implements TemplateVariable {
                 $access[] = array($staff_id, @$vars['member_alerts'][$staff_id]);
             }
         }
-        $this->updateMembers($access, $errors);
 
         if ($errors)
             return false;
 
-        if ($this->save())
-            return $this->members->saveAll();
+        if ($this->save()) {
+            $this->updateMembers($access, $errors);
+            return true;
+        }
 
         if (isset($this->team_id)) {
             $errors['err']=sprintf(__('Unable to update %s.'), __('this team'))
@@ -225,7 +237,8 @@ implements TemplateVariable {
       $dropped = array();
       foreach ($this->members as $member)
           $dropped[$member->staff_id] = 1;
-      while (list(, list($staff_id, $alerts)) = each($access)) {
+      foreach ($access as $acc) {
+          list($staff_id, $alerts) = $acc;
           unset($dropped[$staff_id]);
           if (!$staff_id || !Staff::lookup($staff_id))
               $errors['members'][$staff_id] = __('No such agent');
@@ -354,7 +367,6 @@ implements TemplateVariable {
     static function __create($vars, &$errors) {
         return self::create($vars)->save();
     }
-
 }
 
 class TeamMember extends VerySimpleModel {

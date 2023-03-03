@@ -16,9 +16,17 @@
 require('staff.inc.php');
 include_once(INCLUDE_DIR.'class.canned.php');
 
+if ($thisstaff && $roles = $thisstaff->getRoles()) {
+    $cannedManage = array();
+    foreach ($roles as $r) {
+        if ($r->hasPerm(Canned::PERM_MANAGE, false))
+            $cannedManage[] = 1;
+    }
+}
+
 /* check permission */
 if(!$thisstaff
-        || !$thisstaff->getRole()->hasPerm(Canned::PERM_MANAGE, false)
+        || !in_array(1, $cannedManage)
         || !$cfg->isCannedResponseEnabled()) {
     header('Location: kb.php');
     exit;
@@ -65,7 +73,7 @@ if ($_POST) {
                 // Attach inline attachments from the editor
                 if (isset($_POST['draft_id'])
                         && ($draft = Draft::lookup($_POST['draft_id']))) {
-                    $images = $draft->getAttachmentIds($_POST['response']);
+                    $images = Draft::getAttachmentIds($_POST['response']);
                     $canned->attachments->keepOnlyFileIds($images, true);
                 }
 
@@ -99,7 +107,7 @@ if ($_POST) {
                 if (isset($_POST['draft_id'])
                         && ($draft = Draft::lookup($_POST['draft_id'])))
                     $premade->attachments->upload(
-                        $draft->getAttachmentIds($_POST['response']), true);
+                        Draft::getAttachmentIds($_POST['response']), true);
 
                 // Delete this user's drafts for new canned-responses
                 Draft::deleteForNamespace('canned', $thisstaff->getId());
