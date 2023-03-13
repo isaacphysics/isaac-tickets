@@ -62,7 +62,7 @@ services:
     image: mysql:5.7
     restart: always
     volumes:
-      - "/ada/tickets-cs:/var/lib/mysql:rw"
+      - "/isaac/tickets-ada:/var/lib/mysql:rw"
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
       MYSQL_USER: osticket
