@@ -46,6 +46,29 @@ services:
       MYSQL_PASSWORD: osticket
       MYSQL_DATABASE: osticket
 
+# Ada CS:
+  ada-cs-tickets:
+    container_name: ada-cs-tickets
+    build: .
+    links:
+      - "ada-cs-tickets-db:db-server"
+    restart: always
+    volumes:
+      - "./osTicket/upload:/var/www/html:ro"
+      - "./php.ini:/usr/local/etc/php/php.ini"
+
+  ada-cs-tickets-db:
+    container_name: ada-cs-tickets-db
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - "/ada/tickets-cs:/var/lib/mysql:rw"
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_USER: osticket
+      MYSQL_PASSWORD: osticket
+      MYSQL_DATABASE: osticket
+
 networks:
   default:
     external:
